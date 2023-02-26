@@ -1,0 +1,5 @@
+name: quoteflinger
+description: Flinger of quotes
+runs:
+  using: node18
+  main: index.js
