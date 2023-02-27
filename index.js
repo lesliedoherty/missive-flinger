@@ -50,12 +50,10 @@ async function selectQuote() {
 
 // Controls everything, like a boss
 async function main() {
-  selectQuote().then(console.log).catch(console.error)
-
-  // selectQuote()
-  //  .then(sendMessage)
-  //  .then(() => console.log('Quote flung'))
-  //  .catch(console.error)
+  selectQuote()
+    .then(sendMessage)
+    .then(() => console.log('Quote flung'))
+    .catch(console.error)
 }
 
 main()
