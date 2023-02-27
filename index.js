@@ -36,7 +36,8 @@ async function resolveQuoteFilenames(filenames) {
 // Sends the given quote string to the mynotifier.app API
 function sendMessage(message) {
   const apiKey = process.env.MYNOTIFIER_API_KEY
-  return axios.post('https://api.mynotifier.app', { apiKey, message, type: 'info' });
+  const projectId = process.env.MYNOTIFIER_PROJECT_ID
+  return axios.post('https://api.mynotifier.app', { apiKey, message, type: 'info', project: projectId });
 }
 
 async function selectQuote() {
