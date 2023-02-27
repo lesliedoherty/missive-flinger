@@ -1,4 +1,4 @@
-name: fling-a-quote
+name: fling-missive
 
 on: [push]
 

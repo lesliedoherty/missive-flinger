@@ -1,5 +1,5 @@
-name: quoteflinger
-description: Flinger of quotes
+name: missive-flinger
+description: Flinger of missives
 runs:
   using: node16
   main: index.js
