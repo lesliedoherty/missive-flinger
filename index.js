@@ -1,35 +1,61 @@
-import axios from 'axios';
+const fs = require('fs').promises
+const path = require('path')
+const axios = require('axios')
 
-const apiKey = process.env.MYNOTIFIER_API_KEY;
+// Selects a random item from the given array
+function chooseRandomArrayItem(arr) {
+  return arr[Math.floor(Math.random() * arr.length)]
+}
 
-const quotes = [
-  {
-    quote: "The greatest glory in living lies not in never falling, but in rising every time we fall.",
-    author: "Nelson Mandela"
-  },
-  {
-    quote: "The way to get started is to quit talking and begin doing.",
-    author: "Walt Disney"
-  },
-  {
-    quote: "If life were predictable it would cease to be life, and be without flavor.",
-    author: "Eleanor Roosevelt"
-  },
-  {
-    quote: "Life is what happens when you're busy making other plans.",
-    author: "John Lennon"
-  },
-  {
-    quote: "The best things in life are free. The second best things are very, very expensive.",
-    author: "Coco Chanel"
-  }
-]
+// Returns an array of quote filenames, without the path
+async function listQuoteFiles() {
+  const quotesDir = resolvePath('quotes')
+  return fs.readdir(quotesDir)
+}
 
-const randomQuote = quotes[Math.floor(Math.random() * quotes.length)]
+// Removes trailing and leading spaces and newlines from the given string
+function normalizeQuoteString(binary) {
+  return binary.toString().trim(" ").trim("\n")
+}
 
-axios.post('https://api.mynotifier.app', {
-  apiKey,
-  message: randomQuote.quote,
-  description: randomQuote.author,
-  type: 'info',
-});
+// Reads the contents of the specified quote file
+async function readQuoteFromFile(filename) {
+  return fs.readFile(filename)
+}
+
+// Converts the given relative path to an absolute path
+function resolvePath(relativePath) {
+  return path.resolve(relativePath)
+}
+
+// Converts the given array of quote filenames to absolute paths
+async function resolveQuoteFilenames(filenames) {
+  return filenames.map(filename => resolvePath(`quotes/${filename}`))
+}
+
+// Sends the given quote string to the mynotifier.app API
+function sendMessage(message) {
+  const apiKey = process.env.MYNOTIFIER_API_KEY
+  return axios.post('https://api.mynotifier.app', { apiKey, message, type: 'info' });
+}
+
+async function selectQuote() {
+  // My kingdom for a |>
+  return listQuoteFiles()
+    .then(resolveQuoteFilenames)
+    .then(chooseRandomArrayItem)
+    .then(readQuoteFromFile)
+    .then(normalizeQuoteString)
+}
+
+// Controls everything, like a boss
+async function main() {
+  selectQuote().then(console.log).catch(console.error)
+
+  // selectQuote()
+  //  .then(sendMessage)
+  //  .then(() => console.log('Quote flung'))
+  //  .catch(console.error)
+}
+
+main()
